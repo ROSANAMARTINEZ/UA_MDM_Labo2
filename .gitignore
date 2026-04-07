@@ -1,5 +1,10 @@
  # CSV files
 *.csv
+# Excepciones: datos necesarios para el dashboard
+!input/train/train.csv
+!input/breed_labels.csv
+!input/color_labels.csv
+!input/state_labels.csv
 
 # JSON files
 *.json
