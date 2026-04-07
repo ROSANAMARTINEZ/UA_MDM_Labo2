@@ -1107,6 +1107,7 @@ app = Dash(__name__, external_stylesheets=[
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
 ])
 app.title = 'PetFinder — EDA Dashboard'
+server = app.server  # necesario para gunicorn en Render
 
 app.index_string = '''
 <!DOCTYPE html>
