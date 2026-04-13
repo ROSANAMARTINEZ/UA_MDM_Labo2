@@ -1097,8 +1097,8 @@ print('  Tab 4 — Modelo…')
 
 _modelos_df = pd.DataFrame({
     'Modelo':     ['Baseline', 'FE v1', 'FE v2 + Optuna'],
-    'Kappa Test': [0.3133,      0.3231,  0.3231],   # <-- actualizar último valor
-    'Kappa Train':[0.5877,      0.4677,  0.4677],   # <-- actualizar último valor
+    'Kappa Test': [0.3133,      0.3231,  0.3330],
+    'Kappa Train':[0.5877,      0.4677,  0.4677],
 })
 
 _fig_kappa = px.bar(
@@ -1137,7 +1137,7 @@ _fig_fi = px.bar(
 _fig_fi.update_layout(coloraxis_showscale=False)
 
 tab_modelo_content = html.Div([
-    html.H5('Resultados del Modelado — LightGBM',
+    html.H5('Resultados del Modelado — LightGBM  |  v2 (Abril 2026)',
             style={'color': TEXT_PRIMARY, 'fontWeight': '600', 'marginBottom': '1rem'}),
     dbc.Row([
         dbc.Col([
@@ -1151,9 +1151,9 @@ tab_modelo_content = html.Div([
         dbc.Col([
             dbc.Card([
                 dbc.CardBody([
-                    html.P('Kappa con Feature Engineering', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
-                    html.H3('0.3231', style={'color': C_GREEN, 'fontWeight': '700', 'margin': 0}),
-                    html.P('+0.0099 vs baseline', style={'color': C_GREEN, 'fontSize': '0.75rem', 'margin': 0}),
+                    html.P('Mejor Kappa (FE v2 + Optuna)', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
+                    html.H3('0.3330', style={'color': C_GREEN, 'fontWeight': '700', 'margin': 0}),
+                    html.P('+0.0197 vs baseline', style={'color': C_GREEN, 'fontSize': '0.75rem', 'margin': 0}),
                 ])
             ], style={'borderTop': f'3px solid {C_GREEN}', 'borderRadius': '12px'}),
         ], md=4),
@@ -1161,8 +1161,8 @@ tab_modelo_content = html.Div([
             dbc.Card([
                 dbc.CardBody([
                     html.P('Features utilizadas', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
-                    html.H3('26', style={'color': C_ORANGE, 'fontWeight': '700', 'margin': 0}),
-                    html.P('19 originales + 7 nuevas', style={'color': TEXT_MUTED, 'fontSize': '0.75rem', 'margin': 0}),
+                    html.H3('32', style={'color': C_ORANGE, 'fontWeight': '700', 'margin': 0}),
+                    html.P('19 originales + 13 nuevas', style={'color': TEXT_MUTED, 'fontSize': '0.75rem', 'margin': 0}),
                 ])
             ], style={'borderTop': f'3px solid {C_ORANGE}', 'borderRadius': '12px'}),
         ], md=4),
