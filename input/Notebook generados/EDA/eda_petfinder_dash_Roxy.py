@@ -1104,11 +1104,12 @@ _modelos_df = pd.DataFrame({
         'Baseline\n(Original)',
         'FE v1\n(Roxy)',
         'FE v2 + Optuna\n(Roxy)',
-        'FE v3 + Optuna\n(Roxy Optimizado)',
+        'FE v3 + Optuna simple\n(Roxy)',
+        'FE v3 + Optuna CV\n(Roxy — mejor gap)',
     ],
-    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595],
-    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363],
-    'Tipo':       ['Original', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy'],
+    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3381],
+    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4281],
+    'Tipo':       ['Original', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy'],
 })
 
 _fig_kappa = px.bar(
@@ -1158,9 +1159,9 @@ _fig_fi = px.bar(
 _fig_fi.update_layout(showlegend=True)
 
 tab_modelo_content = html.Div([
-    html.H5('Resultados del Modelado — LightGBM  |  v4 Optimizado (Abril 2026)',
+    html.H5('Resultados del Modelado — LightGBM  |  v5 Final (Abril 2026)',
             style={'color': TEXT_PRIMARY, 'fontWeight': '600', 'marginBottom': '0.3rem'}),
-    html.P('Original: notebook del profesor (19 features)  •  Optimizado Roxy: FE v3 + texto + imágenes + Optuna (39 features)',
+    html.P('Autores: Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello',
            style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'marginBottom': '1rem'}),
     dbc.Row([
         dbc.Col([
