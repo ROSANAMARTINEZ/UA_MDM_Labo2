@@ -1101,15 +1101,16 @@ print('  Tab 4 — Modelo…')
 
 _modelos_df = pd.DataFrame({
     'Modelo': [
-        'Baseline\n(Original)',
-        'FE v1\n(Roxy)',
-        'FE v2 + Optuna\n(Roxy)',
-        'FE v3 + Optuna simple\n(Roxy)',
-        'FE v3 + Optuna CV\n(Roxy — mejor gap)',
+        'Baseline',
+        'FE v1',
+        'FE v2 + Optuna',
+        'FE v3 + Optuna simple',
+        'FE v3 + Optuna CV',
     ],
     'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3381],
     'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4281],
     'Tipo':       ['Original', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy'],
+    'Detalle':    ['19 feat · Original', '26 feat · Roxy', '32 feat · Roxy', '39 feat · Roxy', '41 feat · Roxy (mejor gap)'],
 })
 
 _fig_kappa = px.bar(
@@ -1118,11 +1119,15 @@ _fig_kappa = px.bar(
     color='Tipo', template='plotly_white',
     color_discrete_map={'Original': C_BLUE, 'Ajustado Roxy': C_GREEN},
     text='Kappa Test',
+    hover_data={'Detalle': True, 'Tipo': False},
 )
 _fig_kappa.update_traces(texttemplate='%{text:.4f}', textposition='outside')
-_fig_kappa.update_layout(showlegend=True, yaxis=dict(range=[0, 0.55]),
+_fig_kappa.update_layout(showlegend=True,
+                          yaxis=dict(range=[0, 0.55]),
                           yaxis_title='Cohen Kappa (quadratic)',
-                          xaxis_tickangle=-15)
+                          xaxis=dict(tickangle=-30, tickfont=dict(size=12)),
+                          margin=dict(b=80),
+                          height=380)
 
 _fig_gap = px.bar(
     _modelos_df, x='Modelo',
@@ -1132,8 +1137,11 @@ _fig_gap = px.bar(
     template='plotly_white',
     color_discrete_map={'Kappa Train': C_BLUE, 'Kappa Test': C_ORANGE},
 )
-_fig_gap.update_layout(yaxis=dict(range=[0, 0.8]), yaxis_title='Cohen Kappa (quadratic)',
-                        xaxis_tickangle=-15)
+_fig_gap.update_layout(yaxis=dict(range=[0, 0.8]),
+                        yaxis_title='Cohen Kappa (quadratic)',
+                        xaxis=dict(tickangle=-30, tickfont=dict(size=12)),
+                        margin=dict(b=80),
+                        height=380)
 
 _feat_imp_df = pd.DataFrame({
     'Feature':    ['desc_length', 'avg_label_score', 'sentiment_magnitude',
@@ -1161,7 +1169,7 @@ _fig_fi.update_layout(showlegend=True)
 tab_modelo_content = html.Div([
     html.H5('Resultados del Modelado — LightGBM  |  v5 Final (Abril 2026)',
             style={'color': TEXT_PRIMARY, 'fontWeight': '600', 'marginBottom': '0.3rem'}),
-    html.P('Autores: Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello',
+    html.P('Autores: Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez',
            style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'marginBottom': '1rem'}),
     dbc.Row([
         dbc.Col([
