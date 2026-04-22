@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumen y Guía — PetFinder · Presentación Final</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --blue:   #3b82f6;
+    --green:  #10b981;
+    --orange: #f59e0b;
+    --purple: #8b5cf6;
+    --red:    #ef4444;
+    --gray-50:  #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--gray-800);
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  /* ── Encabezado ── */
+  .doc-header {
+    border-bottom: 3px solid var(--blue);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  .doc-header .badge {
+    display: inline-block;
+    background: var(--blue);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .doc-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .doc-header .meta {
+    font-size: 12.5px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .doc-header .meta strong { color: var(--gray-800); }
+
+  /* ── Secciones ── */
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-top: 40px;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 4px solid var(--blue);
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-top: 22px;
+    margin-bottom: 8px;
+  }
+  p { margin-bottom: 10px; }
+  ul, ol { padding-left: 22px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+
+  /* ── Tablas ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 20px;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--gray-800);
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  tbody tr:nth-child(even) { background: var(--gray-50); }
+  tbody tr:hover { background: #eff6ff; }
+  tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+  .kappa-best { font-weight: 700; color: var(--green); }
+  .kappa-record { font-weight: 700; color: var(--orange); }
+
+  /* ── Cajas destacadas ── */
+  .callout {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .callout-blue   { background: #eff6ff; border-left: 4px solid var(--blue);   }
+  .callout-green  { background: #ecfdf5; border-left: 4px solid var(--green);  }
+  .callout-orange { background: #fffbeb; border-left: 4px solid var(--orange); }
+  .callout-red    { background: #fef2f2; border-left: 4px solid var(--red);    }
+  .callout-purple { background: #f5f3ff; border-left: 4px solid var(--purple); }
+  .callout strong { font-weight: 600; }
+
+  /* ── Código ── */
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #be185d;
+  }
+  pre {
+    background: var(--gray-900);
+    color: #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 12px 0 16px;
+    font-family: 'Consolas', 'Courier New', monospace;
+  }
+  pre .comment { color: #6b7280; }
+  pre .keyword { color: #93c5fd; }
+  pre .string  { color: #86efac; }
+  pre .number  { color: #fca5a5; }
+
+  /* ── Separador ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-200);
+    margin: 36px 0;
+  }
+
+  /* ── Tags de técnica ── */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-right: 4px;
+  }
+  .tag-lgb  { background: #dbeafe; color: #1d4ed8; }
+  .tag-xgb  { background: #dcfce7; color: #15803d; }
+  .tag-bert { background: #fce7f3; color: #9d174d; }
+  .tag-cb   { background: #fef3c7; color: #92400e; }
+  .tag-shap { background: #f3e8ff; color: #6b21a8; }
+
+  /* ── Numeración de secciones ── */
+  .nb-label {
+    display: inline-block;
+    background: var(--gray-800);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 11.5px;
+    color: var(--gray-400);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ENCABEZADO                                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="doc-header">
+  <div class="badge">Laboratorio de Implementación II · Universidad Austral · Abril 2026</div>
+  <h1>Resumen y Guía de Presentación<br>PetFinder Adoption Prediction</h1>
+  <div class="meta">
+    <strong>Autores:</strong> Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez<br>
+    <strong>Problema:</strong> Clasificación multiclase — predecir velocidad de adopción de mascotas (AdoptionSpeed 0–4)<br>
+    <strong>Métrica:</strong> Cohen's Kappa cuadrático · <strong>Dataset:</strong> ~15.000 mascotas, Malasia (Kaggle PetFinder 2019)<br>
+    <strong>Resultado final:</strong> Kappa test <strong>0.3951</strong> (+0.0818 vs. baseline 0.3133)
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 1. QUÉ PROBLEMA RESOLVEMOS                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>1. ¿Qué problema resolvemos?</h2>
+
+<p>El objetivo del proyecto fue predecir con cuánta velocidad sería adoptada una mascota publicada en la plataforma PetFinder. La variable a predecir es <code>AdoptionSpeed</code>, con cinco clases: 0 (adoptada el mismo día), 1 (dentro de la primera semana), 2 (primera mes), 3 (entre 1 y 3 meses) y 4 (no adoptada en 100 días).</p>
+
+<p>Elegimos optimizar el <strong>Cohen's Kappa cuadrático</strong> como métrica porque tiene en cuenta el acuerdo entre predicciones y etiquetas reales más allá del azar, y penaliza más los errores grandes (confundir clase 0 con clase 4 cuesta mucho más que confundir clase 0 con clase 1). Eso la hace más adecuada que el accuracy para problemas con clases ordenadas.</p>
+
+<p>El dataset incluía datos <strong>multimodales</strong>: variables tabulares estructuradas (raza, edad, salud, cantidad de fotos), texto libre en el campo <code>Description</code> (mayormente en inglés y malayo), imágenes de las mascotas y metadatos pre-procesados de sentimiento y visión por computadora.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 2. EVOLUCIÓN DE RESULTADOS                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>2. Evolución de resultados — de baseline a ensemble final</h2>
+
+<table>
+  <thead>
+    <tr><th>Notebook</th><th>Técnica</th><th>Features</th><th>Kappa Test</th><th>Δ vs. baseline</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="nb-label">nb04</span> Baseline</td><td>LightGBM sin FE</td><td>19</td><td>0.3133</td><td>—</td></tr>
+    <tr><td><span class="nb-label">nb04</span> FE v1</td><td>+ features básicas</td><td>26</td><td>0.3231</td><td>+0.0099</td></tr>
+    <tr><td><span class="nb-label">nb04</span> FE v2 + Optuna</td><td>+ interacciones</td><td>32</td><td>0.3371</td><td>+0.0238</td></tr>
+    <tr><td><span class="nb-label">nb04</span> FE v3 + Optuna</td><td>+ texto/imagen</td><td>39</td><td>0.3595</td><td>+0.0462</td></tr>
+    <tr><td><span class="nb-label">nb05</span> FE v4 + CV</td><td>+ rescuer, edad relativa, NLP, 5-fold CV</td><td>48</td><td class="kappa-best">0.3867</td><td>+0.0734</td></tr>
+    <tr><td><span class="nb-label">nb06</span> Blend BERT</td><td>LGB 95% + DistilBERT 5%</td><td>—</td><td>0.3699</td><td>—</td></tr>
+    <tr><td><span class="nb-label">nb07</span> SHAP selection</td><td>Top 25 features por SHAP</td><td>25</td><td>0.3738</td><td>—</td></tr>
+    <tr><td><span class="nb-label">nb08</span> LGB + XGB</td><td>Blend 50% / 50%</td><td>48</td><td>0.3906</td><td>+0.0773</td></tr>
+    <tr><td><span class="nb-label">nb09</span> Blend triple</td><td>LGB 53% + XGB 44% + BERT 3%</td><td>—</td><td>0.3935</td><td>+0.0802</td></tr>
+    <tr><td><span class="nb-label">nb10</span> + CatBoost</td><td><strong>LGB 30% + XGB 45% + CB 25%</strong></td><td>48</td><td class="kappa-record">0.3951</td><td>+0.0818</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 3. PASO A PASO                                              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>3. Lo que hicimos, paso a paso</h2>
+
+<!-- EDA -->
+<h3><span class="nb-label">EDA</span> Análisis exploratorio</h3>
+<p>Empecé por explorar la distribución de <code>AdoptionSpeed</code>, las correlaciones entre variables y el contenido de los campos de texto y sentimiento. Construí un dashboard interactivo con Plotly Dash (5 tabs: distribuciones, correlaciones, texto y sentimiento, significación estadística, y resultados del modelo) que está desplegado en <strong>Render.com</strong>. El hallazgo más relevante del EDA fue que los animales con más fotos y descripciones más largas se adoptan sistemáticamente más rápido.</p>
+
+<!-- nb04 -->
+<h3><span class="nb-label">nb04</span> Feature Engineering progresivo + Optuna baseline</h3>
+<p>Implementé tres rondas de feature engineering sobre las 19 variables originales:</p>
+<ul>
+  <li><strong>FE v1:</strong> <code>HasPhoto</code>, <code>HasVideo</code>, <code>IsFree</code>, <code>AgeGroup</code>, <code>HealthScore</code>, <code>IsPureBreed</code>, <code>PhotoPerAnimal</code></li>
+  <li><strong>FE v2:</strong> interacciones como <code>Age_x_PhotoAmt</code>, <code>IsPureBreed_x_Age</code>, <code>HealthScore_x_Photo</code></li>
+  <li><strong>FE v3:</strong> features de texto e imagen: <code>sentiment_score</code>, <code>avg_label_score</code>, <code>desc_length</code>, etc.</li>
+</ul>
+<p>El problema en este notebook era que Optuna optimizaba los hiperparámetros evaluando directamente sobre el test set → el modelo aprendía a sobreajustarse a ese split específico. El gap train/test llegó a 0.2769.</p>
+
+<!-- nb05 -->
+<h3><span class="nb-label">nb05</span> FE v4/v5 + 5-fold CV + Target Encoding + Optuna</h3>
+
+<p>Este fue el notebook más importante. Introduje tres cambios metodológicos fundamentales:</p>
+
+<div class="callout callout-blue">
+  <strong>1. Target Encoding con smoothing</strong><br>
+  Breed1 tiene 307 valores distintos y State tiene 15. Tratarlos como enteros no tiene sentido semántico (la raza "250" no es similar a la "251"). El target encoding reemplaza cada categoría por la media de AdoptionSpeed de esa categoría calculada sobre el train, con un factor de suavizado:<br><br>
+  <code>encoded = (count × mean_cat + 10 × mean_global) / (count + 10)</code><br><br>
+  El smoothing evita que categorías con pocos ejemplos tengan encodings extremos — cuanto menos datos, más se acerca a la media global.
+</div>
+
+<div class="callout callout-green">
+  <strong>2. 5-fold Stratified CV con early stopping</strong><br>
+  Cambié la metodología de Optuna: en lugar de evaluar sobre el test set, cada trial se evalúa sobre 5 folds distintos del train. El test nunca influye en la búsqueda de hiperparámetros. Dentro de cada fold, uso early stopping (20 rondas sin mejora) para evitar que el modelo sobreajuste el fold de validación.
+</div>
+
+<div class="callout callout-orange">
+  <strong>3. FE v4 — nuevas features sin data leakage</strong><br>
+  <ul style="margin-top: 8px;">
+    <li><code>rescuer_n_pets</code>: cantidad de mascotas publicadas por el mismo rescatador (solo conteo — sin usar el target)</li>
+    <li><code>age_rel_breed</code>: edad del animal dividida por la mediana de su raza+tipo (captura "cachorro viejo para su raza")</li>
+    <li>NLP básico: <code>word_count</code>, <code>unique_words</code>, <code>avg_word_len</code>, <code>uppercase_ratio</code>, <code>has_exclamation</code></li>
+    <li><strong>FE v5</strong> (aporte de un compañero): <code>HasName</code> y <code>AdoptionFriction</code> → +0.0067 kappa</li>
+  </ul>
+</div>
+
+<div class="callout callout-red">
+  <strong>⚠️ Error que detectamos y corregimos: Data Leakage</strong><br>
+  La primera versión del FE v4 calculaba <code>rescuer_speed_mean</code> (media de AdoptionSpeed por rescatador) sobre todo el train y lo usaba como feature. Eso produjo CV kappa 0.7685 — irreal. El problema: al computar medias del target fuera del fold, el fold de validación "sabe" la media de AdoptionSpeed de ese rescatador antes de que el modelo la aprenda. Se detecta porque CV >> test. La solución fue usar solo el conteo (<code>rescuer_n_pets</code>), sin involucrar el target.
+</div>
+
+<!-- nb06 -->
+<h3><span class="nb-label">nb06</span> Transfer Learning — DistilBERT</h3>
+<p>Hice fine-tuning de DistilBERT sobre el campo <code>Description</code> usando Google Colab con GPU T4 (aproximadamente 2 horas de entrenamiento). DistilBERT es una versión comprimida de BERT que mantiene el 97% de su capacidad con 40% menos de parámetros. El modelo pre-entrenado en inglés se adaptó al dominio de PetFinder con las descripciones de las mascotas.</p>
+<p>El resultado fue que BERT solo no mejoró al modelo tabular (kappa 0.3699 vs. 0.3867). El texto ya estaba siendo capturado parcialmente por las features NLP y de sentimiento. Sin embargo, en blend con un peso pequeño (3%) sí aportó marginalmente en nb09 (+0.0029).</p>
+
+<!-- nb07 -->
+<h3><span class="nb-label">nb07</span> Selección de features: Boruta + SHAP</h3>
+
+<p>Apliqué dos técnicas complementarias para entender qué features importan realmente:</p>
+
+<div class="callout callout-purple">
+  <strong>Boruta:</strong> crea "shadow features" (copias aleatorizadas de cada variable) y compara la importancia real contra esas sombras en 50 iteraciones con Random Forest. Una feature se acepta si supera consistentemente a sus sombras. Resultado: solo aceptó <code>avg_label_score</code> (1 feature), <code>age_rel_breed</code> quedó tentativa, y las 46 restantes fueron rechazadas.<br><br>
+  Esto <strong>no significa que las demás sean inútiles</strong> — Random Forest no aprovecha las features tan bien como LightGBM. Boruta con RF es muy conservador para este dataset.
+</div>
+
+<div class="callout callout-blue">
+  <strong>SHAP (SHapley Additive exPlanations):</strong> mide cuánto cambia cada predicción individual cuando se incluye o excluye cada feature, usando la teoría de juegos cooperativos (Shapley values). A diferencia del feature importance tradicional de LightGBM (que cuenta frecuencia de splits), SHAP mide el <em>impacto real</em> en la predicción.<br><br>
+  Top 3 por importancia SHAP: <code>rescuer_n_pets</code> (0.278), <code>age_rel_breed</code> (0.243), <code>Breed1_enc</code> (0.169). Las dos features nuevas de FE v4 son las más importantes del modelo.
+</div>
+
+<!-- nb08 -->
+<h3><span class="nb-label">nb08</span> Ensemble LightGBM + XGBoost</h3>
+<p>Combinar LightGBM y XGBoost tiene sentido aunque ambos sean gradient boosting, porque tienen distintas estrategias de crecimiento: LightGBM crece <em>leaf-wise</em> (divide la hoja de mayor ganancia) y XGBoost crece <em>depth-wise</em> (divide todos los nodos del mismo nivel). Esas diferencias hacen que cometan errores en casos distintos, y al promediar sus probabilidades el error total se reduce.</p>
+<p>El blend 50/50 dio kappa <strong>0.3906</strong>. También corrí Optuna para optimizar los parámetros de XGBoost (50 trials).</p>
+
+<!-- nb09 -->
+<h3><span class="nb-label">nb09</span> Blend triple LGB + XGB + BERT</h3>
+<p>Sumé las predicciones de DistilBERT al blend tabular. Con un grid search de pesos encontré que la combinación óptima es LGB 53.4% + XGB 43.7% + BERT 3%. BERT con poco peso aporta información semántica que los otros dos no capturan directamente desde las features tabulares. Resultado: kappa <strong>0.3935</strong>.</p>
+
+<!-- nb10 -->
+<h3><span class="nb-label">nb10</span> CatBoost + ensemble triple tabular</h3>
+<p>Agregué CatBoost como tercer gradient boosting tabular. Su diferencial técnico es el crecimiento <em>depth-wise simétrico</em>: todos los nodos del mismo nivel se dividen con la misma condición, lo que lo hace más conservador que LGB y menos propenso al overfitting. También tiene manejo nativo de variables categóricas via ordered target encoding interno.</p>
+<p>Individualmente CatBoost obtuvo kappa 0.3489 (por debajo de LGB y XGB), pero al combinarlo en el ensemble aportó diversidad suficiente para llegar al nuevo record: LGB 30% + XGB 45% + CB 25% = <strong>0.3951</strong>.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 4. CONCEPTOS PARA LA PRESENTACIÓN                          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>4. Conceptos clave para explicar en la presentación</h2>
+
+<h3>¿Por qué 5-fold CV en lugar de train/test simple?</h3>
+<p>Con un único split, Optuna puede encontrar parámetros que funcionan bien específicamente en ese test. Al evaluarlos siempre sobre los mismos datos, los hiperparámetros se sobreajustan a ese split particular. Con 5-fold CV, cada combinación de parámetros debe funcionar bien en cinco contextos distintos, lo que garantiza mayor generalización. El test set nunca se usa durante la búsqueda.</p>
+
+<h3>¿Por qué Target Encoding y no One-Hot Encoding?</h3>
+<p>Breed1 tiene 307 categorías. One-Hot generaría 307 columnas binarias — curse of dimensionality. Target encoding colapsa eso en una sola columna continua que captura información real del target para cada raza. El smoothing asegura que razas con pocos animales no tengan encodings extremos e inestables.</p>
+
+<h3>¿Por qué SHAP es mejor que el feature importance de LightGBM?</h3>
+<p>Feature importance tradicional cuenta cuántas veces se usó cada feature para hacer splits. Una feature puede aparecer muchas veces pero con impacto pequeño en la predicción, o pocas veces pero con impacto enorme. SHAP calcula la contribución marginal real de cada feature a cada predicción individual, usando el concepto de Shapley values de la teoría de juegos cooperativos. Es más costoso computacionalmente pero mucho más informativo e interpretable.</p>
+
+<h3>¿Por qué funciona el ensemble si los modelos son similares?</h3>
+<p>LGB, XGB y CatBoost comparten la misma familia (gradient boosting) pero tienen sesgos inductivos distintos. LGB tiende a overfit en hojas muy específicas (leaf-wise). XGB produce árboles más balanceados (depth-wise). CatBoost produce árboles completamente simétricos. Como cada uno sobreajusta en casos distintos, al promediar sus probabilidades los errores individuales se cancelan. La clave es la <em>diversidad</em> de los errores, no la similitud de los modelos.</p>
+
+<h3>¿Por qué BERT con solo 3% de peso?</h3>
+<p>BERT captura información semántica del texto crudo, pero gran parte de esa información ya está representada en las features NLP básicas que tenemos (<code>word_count</code>, <code>sentiment_score</code>, <code>avg_label_score</code>, etc.). El campo Description en PetFinder además es corto y ruidoso — mezcla inglés y malayo con muchos errores de tipeo. Con más de un 5-10% de peso, BERT introduce ruido que supera su aporte. Al 3% captura solo la información marginal que los modelos tabulares no ven directamente.</p>
+
+<h3>¿Qué aprendimos del data leakage?</h3>
+<p>Cuando calculamos la media de AdoptionSpeed por rescatador sobre todo el train y la usamos como feature, el modelo podía "ver" indirectamente el target de los animales del fold de validación. El CV kappa llegó a 0.7685 — claramente irreal comparado con el 0.45 de test. La señal de alerta fue exactamente esa: una brecha enorme entre CV y test. La lección es que cualquier feature que se construya usando el target debe calcularse exclusivamente dentro del fold de train, nunca sobre datos que el modelo vea como validación.</p>
+
+<h3>¿Por qué Boruta rechaza casi todo si las features son útiles?</h3>
+<p>Boruta usa Random Forest internamente, y RF no aprovecha las features tan eficientemente como LightGBM. RF no usa early stopping, no hace target encoding, y selecciona features al azar en cada nodo. El umbral estadístico de Boruta (95% de confianza en 50 iteraciones) es muy conservador. El resultado — solo 1 feature aceptada — no refleja que las demás sean inútiles, sino que RF no puede distinguirlas del ruido con la potencia estadística del test. SHAP con LightGBM confirma que las 48 features tienen importancia real.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 5. RESUMEN DEL IMPACTO                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>5. ¿Qué aportó cada técnica al resultado final?</h2>
+
+<table>
+  <thead>
+    <tr><th>Técnica</th><th>Impacto en kappa</th><th>Por qué funciona</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FE v1–v3 (features básicas)</td>
+      <td>+0.0462</td>
+      <td>Captura señales directas: fotos, salud, edad, texto y sentimiento</td>
+    </tr>
+    <tr>
+      <td>Target Encoding (Breed1, State)</td>
+      <td>+~0.03</td>
+      <td>Convierte 307 razas en señal real de velocidad de adopción</td>
+    </tr>
+    <tr>
+      <td>5-fold CV (reducción de overfitting)</td>
+      <td>Gap: 0.28 → 0.10</td>
+      <td>Hiperparámetros más generalizables, no sobreajustados al test</td>
+    </tr>
+    <tr>
+      <td>FE v4: rescuer, edad relativa, NLP</td>
+      <td>+0.027</td>
+      <td>Señales ocultas: comportamiento del rescatador, comparativa dentro de la raza</td>
+    </tr>
+    <tr>
+      <td>FE v5: HasName + AdoptionFriction</td>
+      <td>+0.007</td>
+      <td>El nombre del animal como señal de su historia en el shelter</td>
+    </tr>
+    <tr>
+      <td>Ensemble LGB + XGB + CatBoost</td>
+      <td>+0.009</td>
+      <td>Diversidad de sesgos entre modelos → cancelación de errores</td>
+    </tr>
+    <tr>
+      <td>BERT en blend (3%)</td>
+      <td>+0.003</td>
+      <td>Información semántica marginal del texto crudo</td>
+    </tr>
+    <tr>
+      <td><strong>Total vs. baseline</strong></td>
+      <td><strong>+0.0818</strong></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 6. ESTRUCTURA DE ARCHIVOS                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>6. Estructura del proyecto</h2>
+
+<pre>
+UA_MDM_Labo2/
+└── input/Notebook generados/
+    ├── EDA/
+    │   ├── eda_petfinder.ipynb                    <span class="comment"># Análisis exploratorio ejecutado</span>
+    │   └── eda_petfinder_dash_Roxy.py             <span class="comment"># Dashboard Plotly Dash (Render)</span>
+    ├── 04_Tabulares_Optimizado_Roxy.ipynb         <span class="comment"># FE v1/v2/v3 + Optuna baseline</span>
+    ├── 05_Tabulares_CV_Roxy.ipynb                 <span class="comment"># FE v4/v5 + 5-fold CV — kappa 0.3867+</span>
+    ├── 06_Blend_BERT_LightGBM_Roxy.ipynb          <span class="comment"># Transfer Learning DistilBERT</span>
+    ├── 07_BorutaSHAP_Roxy.ipynb                   <span class="comment"># Selección de features</span>
+    ├── 08_Ensemble_LGB_XGB_Roxy.ipynb             <span class="comment"># LGB + XGB + Optuna XGB</span>
+    ├── 09_Blend_Triple_LGB_XGB_BERT_Roxy.ipynb    <span class="comment"># Blend triple — kappa 0.3935</span>
+    └── 10_CatBoost_Ensemble_Roxy.ipynb            <span class="comment"># CatBoost — record 0.3951</span>
+</pre>
+
+<div class="callout callout-green">
+  <strong>Dashboard público:</strong> <a href="https://ua-mdm-labo2.onrender.com/" target="_blank">https://ua-mdm-labo2.onrender.com/</a><br>
+  Incluye análisis exploratorio completo y comparativa interactiva de todos los modelos.
+</div>
+
+<div class="footer">
+  Laboratorio de Implementación II · Universidad Austral · Abril 2026 ·
+  Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez
+</div>
+
+</body>
+</html>
