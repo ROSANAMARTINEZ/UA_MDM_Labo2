@@ -1245,12 +1245,13 @@ tab_texto_content = build_tab_texto()
 print('  Tab 5 — Modelo…')
 
 # ── Tab 4: Modelo ─────────────────────────────────────────────────────────────
-# Resultados finales v6 (Abril 2026)
+# Resultados finales v7 (Abril 2026)
 # nb04: Baseline 0.3133 | FE v1 0.3231 | FE v2+Optuna 0.3371
-# nb05: FE v3+Optuna simple 0.3595 | FE v3+Optuna CV 0.3381 | FE v4+Optuna CV 0.3867
-# nb06: Blend LGB(FE v4)+BERT 0.95/0.05 = 0.3699 (BERT no mejora)
+# nb05: FE v3+Optuna simple 0.3595 | FE v4+Optuna CV 0.3867
+# nb06: Blend LGB(FE v4)+BERT 0.95/0.05 = 0.3699
 # nb07: SHAP selection 25 feat = 0.3738
-# nb08: XGB FE v4 = 0.3803 | Blend LGB+XGB 50/50 = 0.3906 (mejor)
+# nb08: XGB FE v4 = 0.3803 | Blend LGB+XGB 50/50 = 0.3906
+# nb09: Blend LGB(53%)+XGB(44%)+BERT(3%) = 0.3935 (mejor)
 
 _modelos_df = pd.DataFrame({
     'Modelo': [
@@ -1263,16 +1264,19 @@ _modelos_df = pd.DataFrame({
         'Blend LGB+XGB',
         'Blend LGB+BERT',
         'SHAP selection',
+        'Blend LGB+XGB+BERT',
     ],
-    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3867, 0.3803, 0.3906, 0.3699, 0.3738],
-    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4612, 0.4530, 0.4580, 0.4612, 0.4490],
+    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3867, 0.3803, 0.3906, 0.3699, 0.3738, 0.3935],
+    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4612, 0.4530, 0.4580, 0.4612, 0.4490, 0.4595],
     'Tipo':       ['Original', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy',
-                   'FE v4', 'FE v4', 'Ensemble (mejor)', 'Ensemble', 'Seleccion SHAP'],
+                   'FE v4', 'FE v4', 'Ensemble', 'Ensemble',
+                   'Seleccion SHAP', 'Ensemble (mejor)'],
     'Detalle':    ['19 feat · Original', '26 feat · Roxy', '32 feat · Roxy', '39 feat · Roxy',
                    '48 feat · LightGBM', '48 feat · XGBoost',
-                   'LGB 50% + XGB 50% · mejor ensemble',
+                   'LGB 50% + XGB 50%',
                    'LGB 95% + DistilBERT 5%',
-                   '25 feat · SHAP >= 0.04'],
+                   '25 feat · SHAP >= 0.04',
+                   'LGB 53% + XGB 44% + BERT 3% · RECORD'],
 })
 
 _fig_kappa = px.bar(
@@ -1348,7 +1352,7 @@ _fig_shap = px.bar(
 _fig_shap.update_layout(showlegend=True, xaxis_title='Mean |SHAP value|', height=500)
 
 tab_modelo_content = html.Div([
-    html.H5('Resultados del Modelado — LightGBM + XGBoost Ensemble  |  v6 Final (Abril 2026)',
+    html.H5('Resultados del Modelado — LGB + XGB + BERT Ensemble  |  v7 Final (Abril 2026)',
             style={'color': TEXT_PRIMARY, 'fontWeight': '600', 'marginBottom': '0.3rem'}),
     html.P('Autores: Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez',
            style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'marginBottom': '1rem'}),
@@ -1365,9 +1369,9 @@ tab_modelo_content = html.Div([
         dbc.Col([
             dbc.Card([
                 dbc.CardBody([
-                    html.P('Mejor Kappa (Ensemble LGB+XGB)', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
-                    html.H3('0.3906', style={'color': '#f59e0b', 'fontWeight': '700', 'margin': 0}),
-                    html.P('+0.0773 vs baseline  •  LGB 50% + XGB 50%', style={'color': '#f59e0b', 'fontSize': '0.75rem', 'margin': 0}),
+                    html.P('Mejor Kappa (Blend Triple LGB+XGB+BERT)', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
+                    html.H3('0.3935', style={'color': '#f59e0b', 'fontWeight': '700', 'margin': 0}),
+                    html.P('+0.0802 vs baseline  •  LGB 53% + XGB 44% + BERT 3%', style={'color': '#f59e0b', 'fontSize': '0.75rem', 'margin': 0}),
                 ])
             ], style={'borderTop': '3px solid #10b981', 'borderRadius': '12px'}),
         ], md=4),
