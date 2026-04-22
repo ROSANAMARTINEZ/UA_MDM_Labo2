@@ -1089,7 +1089,155 @@ print('  Tab 2 — Asociación…')
 tab2_content = build_tab2()
 print('  Tab 3 — Significación…')
 tab3_content = build_tab3()
-print('  Tab 4 — Modelo…')
+print('  Tab 4 — Texto & Sentiment…')
+
+# ── Tab 4: Texto & Sentiment ──────────────────────────────────────────────────
+def build_tab_texto():
+    try:
+        sent_df = pd.read_csv(BASE / 'input' / 'train_sentiment_features.csv')
+        meta_df = pd.read_csv(BASE / 'input' / 'train_metadata_features.csv')
+        df_s = DF.merge(sent_df[['PetID','sentiment_score','sentiment_magnitude','n_sentences','language']], on='PetID', how='left')
+        df_s = df_s.merge(meta_df[['PetID','avg_label_score','n_labels','crop_confidence']], on='PetID', how='left')
+        df_s['desc_length'] = df_s['Description'].fillna('').apply(len)
+        df_s['AdoptionLabel'] = df_s['AdoptionSpeed'].map(ADOPTION_LABELS)
+        df_s = df_s.fillna(0)
+    except Exception as e:
+        return html.P(f'Error cargando datos de texto: {e}', style={'color': C_RED})
+
+    fig_sent = px.bar(
+        df_s.groupby('AdoptionLabel')['sentiment_score'].mean().reset_index(),
+        x='AdoptionLabel', y='sentiment_score', color='AdoptionLabel',
+        color_discrete_sequence=PALETTE, template='plotly_white',
+        title='Sentiment Score promedio por clase de adopción',
+    )
+    fig_sent.update_layout(**chart_layout(xt='Clase', yt='Score (−1 a +1)', showlegend=False))
+
+    fig_box = px.box(df_s, x='AdoptionLabel', y='sentiment_score',
+                     color='AdoptionLabel', color_discrete_sequence=PALETTE,
+                     template='plotly_white',
+                     title='Distribución de Sentiment Score por clase')
+    fig_box.update_layout(**chart_layout(xt='Clase', yt='Score', showlegend=False))
+
+    fig_desc = px.bar(
+        df_s.groupby('AdoptionLabel')['desc_length'].mean().reset_index(),
+        x='AdoptionLabel', y='desc_length', color='AdoptionLabel',
+        color_discrete_sequence=PALETTE, template='plotly_white',
+        title='Longitud promedio de descripción por clase',
+    )
+    fig_desc.update_layout(**chart_layout(xt='Clase', yt='Caracteres', showlegend=False))
+
+    lang_counts = df_s['language'].value_counts().reset_index()
+    lang_counts.columns = ['Idioma', 'Cantidad']
+    fig_lang = px.pie(lang_counts.head(6), values='Cantidad', names='Idioma',
+                      title='Distribución de idiomas en las descripciones',
+                      color_discrete_sequence=PALETTE, template='plotly_white')
+    fig_lang.update_traces(textposition='inside', textinfo='percent+label')
+    fig_lang.update_layout(**chart_layout(showlegend=True))
+
+    fig_img = px.bar(
+        df_s.groupby('AdoptionLabel')['avg_label_score'].mean().reset_index(),
+        x='AdoptionLabel', y='avg_label_score', color='AdoptionLabel',
+        color_discrete_sequence=PALETTE, template='plotly_white',
+        title='Calidad de imagen promedio (Google Vision) por clase',
+    )
+    fig_img.update_layout(**chart_layout(xt='Clase', yt='Score (0–1)', showlegend=False))
+
+    fig_mag = px.bar(
+        df_s.groupby('AdoptionLabel')['sentiment_magnitude'].mean().reset_index(),
+        x='AdoptionLabel', y='sentiment_magnitude', color='AdoptionLabel',
+        color_discrete_sequence=PALETTE, template='plotly_white',
+        title='Sentiment Magnitude promedio por clase (intensidad emocional)',
+    )
+    fig_mag.update_layout(**chart_layout(xt='Clase', yt='Magnitud', showlegend=False))
+
+    return html.Div([
+        section_title('Análisis de Texto, Sentimiento e Imágenes'),
+        html.P('Fuentes: Google Natural Language API · Google Vision API · 14.442 JSONs de sentiment · 58.311 JSONs de metadata',
+               style={'color': TEXT_MUTED, 'fontSize': '0.82rem', 'marginBottom': '1.2rem'}),
+        dbc.Row([
+            dbc.Col([kpi_card('Sentiment promedio', f'{df_s["sentiment_score"].mean():.3f}',
+                              'Escala −1 (neg) a +1 (pos)', '💬', C_GREEN)], md=3),
+            dbc.Col([kpi_card('Desc. promedio', f'{int(df_s["desc_length"].mean())} chars',
+                              f'Sin desc: {(df_s["desc_length"]==0).sum()} mascotas', '📝', C_BLUE)], md=3),
+            dbc.Col([kpi_card('Calidad imagen', f'{df_s["avg_label_score"].mean():.3f}',
+                              'Score Google Vision (0–1)', '📷', C_ORANGE)], md=3),
+            dbc.Col([kpi_card('Magnitude promedio', f'{df_s["sentiment_magnitude"].mean():.3f}',
+                              'Intensidad emocional del texto', '❤️', C_PURPLE)], md=3),
+        ], className='g-3', style={'marginBottom': '1.5rem'}),
+        dbc.Row([
+            dbc.Col([card([graph(fig_sent)])], md=6),
+            dbc.Col([card([graph(fig_box)])],  md=6),
+        ], className='g-3'),
+        dbc.Row([
+            dbc.Col([card([graph(fig_desc)])], md=6),
+            dbc.Col([card([graph(fig_lang)])], md=6),
+        ], className='g-3'),
+        dbc.Row([
+            dbc.Col([card([graph(fig_img)])],  md=6),
+            dbc.Col([card([graph(fig_mag)])],  md=6),
+        ], className='g-3'),
+        divider(),
+        section_title('Hallazgos clave del análisis multimodal'),
+        dbc.Row([
+            dbc.Col([card([
+                html.P('📌 desc_length es la variable #1 en importancia', style={'fontWeight': '700', 'color': TEXT_PRIMARY, 'marginBottom': '0.3rem'}),
+                html.P('Las mascotas con descripciones más largas y emotivas se adoptan más rápido. '
+                       'La calidad de la presentación importa tanto como las características físicas del animal.',
+                       style={'color': TEXT_MUTED, 'fontSize': '0.85rem'}),
+            ])], md=6),
+            dbc.Col([card([
+                html.P('📌 avg_label_score (calidad de foto) es la variable #2', style={'fontWeight': '700', 'color': TEXT_PRIMARY, 'marginBottom': '0.3rem'}),
+                html.P('La calidad de las imágenes según Google Vision supera en importancia a la edad y la raza. '
+                       'Fotos claras y bien encuadradas aumentan significativamente las probabilidades de adopción.',
+                       style={'color': TEXT_MUTED, 'fontSize': '0.85rem'}),
+            ])], md=6),
+        ], className='g-3'),
+        dbc.Row([
+            dbc.Col([card([
+                html.P('📌 Mascotas sin foto se adoptan hasta 2x más lento', style={'fontWeight': '700', 'color': TEXT_PRIMARY, 'marginBottom': '0.3rem'}),
+                html.P('PhotoAmt = 0 correlaciona fuertemente con AdoptionSpeed = 4 (>100 días). '
+                       'Subir al menos una foto es el cambio más impactante que puede hacer un rescatista.',
+                       style={'color': TEXT_MUTED, 'fontSize': '0.85rem'}),
+            ])], md=6),
+            dbc.Col([card([
+                html.P('📌 sentiment_magnitude supera al sentiment_score', style={'fontWeight': '700', 'color': TEXT_PRIMARY, 'marginBottom': '0.3rem'}),
+                html.P('La intensidad emocional del texto (cuánta emoción transmite) predice mejor que la polaridad '
+                       '(positivo/negativo). Descripciones apasionadas funcionan mejor que descripciones neutras.',
+                       style={'color': TEXT_MUTED, 'fontSize': '0.85rem'}),
+            ])], md=6),
+        ], className='g-3'),
+        divider(),
+        section_title('Prevención de Data Leakage'),
+        card([
+            html.P('El data leakage ocurre cuando información del futuro o del test contamina el entrenamiento. '
+                   'En este proyecto tomamos las siguientes precauciones:', style={'color': TEXT_MUTED, 'fontSize': '0.85rem', 'marginBottom': '0.8rem'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Ul([
+                        html.Li([html.Strong('Target Encoding: '), 'calculado SOLO sobre el fold de train en cada split del CV. '
+                                 'El fold de validación y el test nunca participan en el cálculo del encoding.'],
+                                style={'color': TEXT_MUTED, 'fontSize': '0.84rem', 'marginBottom': '0.5rem'}),
+                        html.Li([html.Strong('Optuna CV: '), 'el optimizador evalúa sobre validación cruzada interna del training set. '
+                                 'El test set solo se usa para el reporte final, nunca para optimización.'],
+                                style={'color': TEXT_MUTED, 'fontSize': '0.84rem', 'marginBottom': '0.5rem'}),
+                    ], style={'paddingLeft': '1.2rem'})
+                ], md=6),
+                dbc.Col([
+                    html.Ul([
+                        html.Li([html.Strong('Features de texto/imagen: '), 'parseadas de JSONs pre-computados por Google. '
+                                 'No hay target leakage porque son características del perfil publicado, no del resultado de adopción.'],
+                                style={'color': TEXT_MUTED, 'fontSize': '0.84rem', 'marginBottom': '0.5rem'}),
+                        html.Li([html.Strong('Split estratificado: '), 'train/test mantiene la misma proporción de clases. '
+                                 'Seed fijo (42) para reproducibilidad.'],
+                                style={'color': TEXT_MUTED, 'fontSize': '0.84rem', 'marginBottom': '0.5rem'}),
+                    ], style={'paddingLeft': '1.2rem'})
+                ], md=6),
+            ]),
+        ]),
+    ])
+
+tab_texto_content = build_tab_texto()
+print('  Tab 5 — Modelo…')
 
 # ── Tab 4: Modelo ─────────────────────────────────────────────────────────────
 # Resultados del notebook 04_Tabulares V2 - Ejecutado Roxy
@@ -1272,6 +1420,8 @@ app.layout = html.Div([
                             label='🔗  Asociación',   tab_style=TAB_STYLE, active_tab_style=TAB_SELECTED),
                     dbc.Tab(html.Div(tab3_content, style=CONTENT_PAD),
                             label='✔  Significación', tab_style=TAB_STYLE, active_tab_style=TAB_SELECTED),
+                    dbc.Tab(html.Div(tab_texto_content, style=CONTENT_PAD),
+                            label='📝  Texto & Sentiment', tab_style=TAB_STYLE, active_tab_style=TAB_SELECTED),
                     dbc.Tab(html.Div(tab_modelo_content, style=CONTENT_PAD),
                             label='🤖  Modelo',        tab_style=TAB_STYLE, active_tab_style=TAB_SELECTED),
                 ], style={'background': 'white', 'borderRadius': '16px 16px 0 0',
