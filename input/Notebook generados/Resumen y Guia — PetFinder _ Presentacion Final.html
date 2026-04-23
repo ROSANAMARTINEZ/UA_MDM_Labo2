@@ -212,7 +212,7 @@
     <strong>Autores:</strong> Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez<br>
     <strong>Problema:</strong> Clasificación multiclase — predecir velocidad de adopción de mascotas (AdoptionSpeed 0–4)<br>
     <strong>Métrica:</strong> Cohen's Kappa cuadrático · <strong>Dataset:</strong> ~15.000 mascotas, Malasia (Kaggle PetFinder 2019)<br>
-    <strong>Resultado final:</strong> Kappa test <strong>0.3951</strong> (+0.0818 vs. baseline 0.3133)
+    <strong>Resultado final:</strong> Kappa test <strong>0.4207</strong> (+0.1074 vs. baseline 0.3133) — Ensemble + Optimized Rounder
   </div>
 </div>
 
@@ -249,7 +249,8 @@
     <tr><td><span class="nb-label">nb07</span> SHAP selection</td><td>Top 25 features por SHAP</td><td>25</td><td>0.3738</td><td>—</td></tr>
     <tr><td><span class="nb-label">nb08</span> LGB + XGB</td><td>Blend 50% / 50%</td><td>48</td><td>0.3906</td><td>+0.0773</td></tr>
     <tr><td><span class="nb-label">nb09</span> Blend triple</td><td>LGB 53% + XGB 44% + BERT 3%</td><td>—</td><td>0.3935</td><td>+0.0802</td></tr>
-    <tr><td><span class="nb-label">nb10</span> + CatBoost</td><td><strong>LGB 30% + XGB 45% + CB 25%</strong></td><td>48</td><td class="kappa-record">0.3951</td><td>+0.0818</td></tr>
+    <tr><td><span class="nb-label">nb10</span> + CatBoost</td><td>LGB 30% + XGB 45% + CB 25%</td><td>48</td><td>0.3951</td><td>+0.0818</td></tr>
+    <tr><td><span class="nb-label">nb11</span> Opt. Rounder</td><td><strong>Ensemble + umbrales óptimos (Nelder-Mead)</strong></td><td>48</td><td class="kappa-record">0.4207</td><td>+0.1074</td></tr>
   </tbody>
 </table>
 
@@ -338,7 +339,13 @@
 <!-- nb10 -->
 <h3><span class="nb-label">nb10</span> CatBoost + ensemble triple tabular</h3>
 <p>Agregué CatBoost como tercer gradient boosting tabular. Su diferencial técnico es el crecimiento <em>depth-wise simétrico</em>: todos los nodos del mismo nivel se dividen con la misma condición, lo que lo hace más conservador que LGB y menos propenso al overfitting. También tiene manejo nativo de variables categóricas via ordered target encoding interno.</p>
-<p>Individualmente CatBoost obtuvo kappa 0.3489 (por debajo de LGB y XGB), pero al combinarlo en el ensemble aportó diversidad suficiente para llegar al nuevo record: LGB 30% + XGB 45% + CB 25% = <strong>0.3951</strong>.</p>
+<p>Individualmente CatBoost obtuvo kappa 0.3489 (por debajo de LGB y XGB), pero al combinarlo en el ensemble aportó diversidad suficiente: LGB 30% + XGB 45% + CB 25% = <strong>0.3951</strong>.</p>
+
+<!-- nb11 -->
+<h3><span class="nb-label">nb11</span> Optimized Rounder — umbrales óptimos para Kappa</h3>
+<p>Incorporé una recomendación de un colega: en lugar de convertir las probabilidades del ensemble a clase con <code>argmax</code>, calculo un <strong>score continuo</strong> como promedio ponderado de las clases (0×p₀ + 1×p₁ + 2×p₂ + 3×p₃ + 4×p₄) y busco los 4 umbrales de corte óptimos con <code>scipy.optimize.minimize</code> (método Nelder-Mead).</p>
+<p>El insight clave: el redondeo estándar asume umbrales en 0.5, 1.5, 2.5, 3.5, pero las clases en PetFinder <strong>no están balanceadas</strong>. El optimizador encontró umbrales en <strong>0.503, 2.063, 2.516, 2.914</strong> — el umbral entre clase 3 y 4 se corrió de 3.5 a 2.9, lo que redujo las predicciones de clase 4 (">100 días") de 1206 a 784.</p>
+<p>El rounder se ajusta exclusivamente sobre predicciones <strong>OOF (out-of-fold)</strong>, nunca sobre el test set. Resultado: <strong>kappa 0.4207</strong> — nuevo record, +0.0256 sobre el ensemble.</p>
 
 <hr>
 
@@ -364,6 +371,9 @@
 
 <h3>¿Qué aprendimos del data leakage?</h3>
 <p>Cuando calculamos la media de AdoptionSpeed por rescatador sobre todo el train y la usamos como feature, el modelo podía "ver" indirectamente el target de los animales del fold de validación. El CV kappa llegó a 0.7685 — claramente irreal comparado con el 0.45 de test. La señal de alerta fue exactamente esa: una brecha enorme entre CV y test. La lección es que cualquier feature que se construya usando el target debe calcularse exclusivamente dentro del fold de train, nunca sobre datos que el modelo vea como validación.</p>
+
+<h3>¿Qué es el Optimized Rounder y por qué mejora el Kappa?</h3>
+<p>Los modelos de clasificación ordinal producen probabilidades para cada clase. La forma más directa de convertir eso a una predicción es <code>argmax</code> (la clase con mayor probabilidad). Pero para Kappa cuadrático existe una alternativa mejor: calcular un score continuo (promedio ponderado de las clases) y aplicar <strong>umbrales de corte optimizados</strong>. Los umbrales estándar (0.5, 1.5, 2.5, 3.5) asumen distribución balanceada, pero en PetFinder la clase 4 (no adoptado) está sobrerrepresentada. Al optimizar los umbrales con Nelder-Mead sobre las predicciones OOF, el modelo redistribuye mejor las predicciones y sube el Kappa en +0.0256.</p>
 
 <h3>¿Por qué Boruta rechaza casi todo si las features son útiles?</h3>
 <p>Boruta usa Random Forest internamente, y RF no aprovecha las features tan eficientemente como LightGBM. RF no usa early stopping, no hace target encoding, y selecciona features al azar en cada nodo. El umbral estadístico de Boruta (95% de confianza en 50 iteraciones) es muy conservador. El resultado — solo 1 feature aceptada — no refleja que las demás sean inútiles, sino que RF no puede distinguirlas del ruido con la potencia estadística del test. SHAP con LightGBM confirma que las 48 features tienen importancia real.</p>
