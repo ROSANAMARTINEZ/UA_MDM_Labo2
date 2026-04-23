@@ -1254,7 +1254,8 @@ print('  Tab 5 — Modelo…')
 # nb08: XGB FE v4 = 0.3803 | Blend LGB+XGB 50/50 = 0.3906
 # nb09: Blend LGB(53%)+XGB(44%)+BERT(3%) = 0.3935
 # nb10: CatBoost FE v4 = 0.3489 | Blend LGB(30%)+XGB(45%)+CB(25%) = 0.3951
-# nb11: Optimized Rounder sobre ensemble LGB+XGB+CB = 0.4207 (mejor)
+# nb11: Optimized Rounder sobre ensemble LGB+XGB+CB = 0.4242 (mejor)
+# nb12: Stacking LR meta-learner + Opt. Rounder = 0.4215
 
 _modelos_df = pd.DataFrame({
     'Modelo': [
@@ -1270,20 +1271,22 @@ _modelos_df = pd.DataFrame({
         'Blend LGB+XGB+BERT',
         'Blend LGB+XGB+CB',
         'Opt. Rounder',
+        'Stacking LR',
     ],
-    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3867, 0.3803, 0.3489, 0.3906, 0.3699, 0.3935, 0.3951, 0.4207],
-    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4612, 0.4530, 0.4210, 0.4580, 0.4612, 0.4595, 0.4560, 0.4681],
+    'Kappa Test': [0.3133, 0.3231, 0.3371, 0.3595, 0.3867, 0.3803, 0.3489, 0.3906, 0.3699, 0.3935, 0.3951, 0.4242, 0.4215],
+    'Kappa Train':[0.5877, 0.4677, 0.4677, 0.6363, 0.4612, 0.4530, 0.4210, 0.4580, 0.4612, 0.4595, 0.4560, 0.4681, 0.4680],
     'Tipo':       ['Original', 'Ajustado Roxy', 'Ajustado Roxy', 'Ajustado Roxy',
                    'FE v4', 'FE v4', 'FE v4',
                    'Ensemble', 'Ensemble', 'Ensemble', 'Ensemble',
-                   'Ensemble (mejor)'],
+                   'Ensemble (mejor)', 'Stacking'],
     'Detalle':    ['19 feat · Original', '26 feat · Roxy', '32 feat · Roxy', '39 feat · Roxy',
                    '48 feat · LightGBM', '48 feat · XGBoost', '48 feat · CatBoost',
                    'LGB 50% + XGB 50%',
                    'LGB 95% + DistilBERT 5%',
                    'LGB 53% + XGB 44% + BERT 3%',
                    'LGB 30% + XGB 45% + CB 25%',
-                   'Ensemble + umbrales optimos · RECORD'],
+                   'Ensemble + umbrales optimos · RECORD',
+                   'Meta-learner LR sobre 15 OOF probs'],
 })
 
 _fig_kappa = px.bar(
@@ -1294,6 +1297,7 @@ _fig_kappa = px.bar(
         'Original': C_BLUE, 'Ajustado Roxy': C_GREEN,
         'FE v4': '#10b981', 'Ensemble (mejor)': '#f59e0b',
         'Ensemble': C_PURPLE, 'Seleccion SHAP': C_ORANGE,
+        'Stacking': C_TEAL,
     },
     text='Kappa Test',
     hover_data={'Detalle': True, 'Tipo': False},
@@ -1377,8 +1381,8 @@ tab_modelo_content = html.Div([
             dbc.Card([
                 dbc.CardBody([
                     html.P('Mejor Kappa (Ensemble + Optimized Rounder)', style={'color': TEXT_MUTED, 'fontSize': '0.8rem', 'margin': 0}),
-                    html.H3('0.4207', style={'color': '#f59e0b', 'fontWeight': '700', 'margin': 0}),
-                    html.P('+0.1074 vs baseline  •  LGB+XGB+CB + umbrales optimos', style={'color': '#f59e0b', 'fontSize': '0.75rem', 'margin': 0}),
+                    html.H3('0.4242', style={'color': '#f59e0b', 'fontWeight': '700', 'margin': 0}),
+                    html.P('+0.1109 vs baseline  •  LGB+XGB+CB + umbrales optimos', style={'color': '#f59e0b', 'fontSize': '0.75rem', 'margin': 0}),
                 ])
             ], style={'borderTop': '3px solid #10b981', 'borderRadius': '12px'}),
         ], md=4),

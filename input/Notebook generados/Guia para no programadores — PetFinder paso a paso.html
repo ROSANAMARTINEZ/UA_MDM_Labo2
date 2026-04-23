@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía para no programadores — PetFinder paso a paso</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --blue:   #3b82f6;
+    --green:  #10b981;
+    --orange: #f59e0b;
+    --purple: #8b5cf6;
+    --red:    #ef4444;
+    --gray-50:  #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--gray-800);
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  .doc-header {
+    border-bottom: 3px solid var(--green);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+  .doc-header .badge {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .doc-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .doc-header .meta {
+    font-size: 12.5px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .doc-header .meta strong { color: var(--gray-800); }
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-top: 44px;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 4px solid var(--green);
+  }
+  h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  p { margin-bottom: 12px; }
+  ul, ol { padding-left: 22px; margin-bottom: 12px; }
+  li { margin-bottom: 5px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 20px;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--gray-800);
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  tbody tr:nth-child(even) { background: var(--gray-50); }
+  tbody tr:hover { background: #f0fdf4; }
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+  .kappa-record { font-weight: 700; color: var(--orange); }
+  .kappa-best   { font-weight: 700; color: var(--green); }
+
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .callout-blue   { background: #eff6ff; border-left: 4px solid var(--blue);   }
+  .callout-green  { background: #ecfdf5; border-left: 4px solid var(--green);  }
+  .callout-orange { background: #fffbeb; border-left: 4px solid var(--orange); }
+  .callout-red    { background: #fef2f2; border-left: 4px solid var(--red);    }
+  .callout-purple { background: #f5f3ff; border-left: 4px solid var(--purple); }
+  .callout strong { font-weight: 600; }
+  .callout .emoji { font-size: 20px; margin-right: 8px; vertical-align: middle; }
+
+  .step-card {
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 18px 0;
+    position: relative;
+  }
+  .step-card .step-number {
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    background: var(--green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+  .step-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+  }
+
+  .analogy {
+    background: #f0fdf4;
+    border: 1px dashed var(--green);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--gray-700, #374151);
+  }
+  .analogy::before { content: "🤔 Analogía: "; font-weight: 700; color: var(--green); }
+
+  .resultado {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 4px;
+  }
+
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #be185d;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-200);
+    margin: 40px 0;
+  }
+
+  .nb-label {
+    display: inline-block;
+    background: var(--gray-800);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .progreso {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    font-size: 12.5px;
+  }
+  .progreso-item {
+    background: var(--gray-100);
+    border-radius: 20px;
+    padding: 4px 12px;
+    color: var(--gray-600);
+  }
+  .progreso-item.activo {
+    background: var(--green);
+    color: white;
+    font-weight: 600;
+  }
+  .progreso-arrow { color: var(--gray-400); }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 11.5px;
+    color: var(--gray-400);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="badge">Guía para no programadores · Universidad Austral · Abril 2026</div>
+  <h1>¿Cómo predijimos la adopción de mascotas?<br>Explicado paso a paso, sin jerga técnica</h1>
+  <div class="meta">
+    <strong>Autores:</strong> Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez<br>
+    <strong>Proyecto:</strong> Kaggle PetFinder 2019 — predecir velocidad de adopción de mascotas en Malasia<br>
+    <strong>Resultado final:</strong> pasamos de adivinar bien en el <strong>31%</strong> de los casos a hacerlo en el <strong>42%</strong> de manera significativa — una mejora de +10 puntos
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>1. ¿Cuál era el problema?</h2>
+
+<p>En la plataforma PetFinder de Malasia hay miles de mascotas publicadas en adopción. Cada publicación tiene fotos, una descripción escrita por el rescatador, y datos como la raza, edad, salud y cuánto cuesta adoptar el animal.</p>
+
+<p>El objetivo era que una computadora <strong>predijera con cuánta rapidez sería adoptada cada mascota</strong>, usando solo esa información disponible al momento de publicarse. La respuesta podía ser una de cinco categorías:</p>
+
+<table>
+  <thead><tr><th>Clase</th><th>¿Qué significa?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>0</strong></td><td>Adoptada el mismo día de la publicación</td></tr>
+    <tr><td><strong>1</strong></td><td>Adoptada dentro de la primera semana</td></tr>
+    <tr><td><strong>2</strong></td><td>Adoptada en el primer mes</td></tr>
+    <tr><td><strong>3</strong></td><td>Adoptada entre 1 y 3 meses</td></tr>
+    <tr><td><strong>4</strong></td><td>No adoptada en 100 días</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-blue">
+  <strong>¿Cómo medimos qué tan bien acertamos?</strong><br>
+  Usamos una métrica llamada <strong>Cohen's Kappa cuadrático</strong>. A diferencia del porcentaje de aciertos simple, esta métrica penaliza más los errores graves: equivocarse entre "adoptada en el día" y "nunca adoptada" es peor que equivocarse entre "adoptada esta semana" y "adoptada este mes". Va de 0 (igual que adivinar al azar) a 1 (predicción perfecta).
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>2. Primero: explorar los datos (EDA)</h2>
+
+<p>Antes de enseñarle nada a la computadora, pasé un tiempo simplemente <strong>mirando los datos</strong> para entender qué tenía y qué patrones existían. Esto se llama Análisis Exploratorio de Datos (EDA).</p>
+
+<div class="analogy">
+  Es como cuando cocinás un plato nuevo: primero olfateás y probás los ingredientes crudos antes de seguir la receta. Así sabés con qué estás trabajando.
+</div>
+
+<h3>¿Qué encontré?</h3>
+<ul>
+  <li><strong>El dataset tenía 14.993 mascotas</strong> — 8.132 perros y 6.861 gatos.</li>
+  <li><strong>La categoría más común era la 4</strong> (no adoptado): más de la mitad de las mascotas no se adoptaron en 100 días. Esto fue una señal importante — el modelo iba a tender a predecir siempre "no adoptado" si no lo corregíamos.</li>
+  <li><strong>Las mascotas con más fotos se adoptaban más rápido.</strong> Las que tenían 3 o más fotos se adoptaban en promedio 15 días antes que las que no tenían ninguna.</li>
+  <li><strong>Las mascotas gratuitas o muy baratas se adoptaban más rápido</strong>, como era de esperar.</li>
+  <li><strong>Las descripciones más largas y con tono positivo</strong> correlacionaban con adopciones más rápidas.</li>
+</ul>
+
+<p>Para visualizar todo esto construí un <strong>dashboard interactivo</strong> que está disponible en internet: los cinco tabs muestran distribuciones, correlaciones, análisis de texto, tests estadísticos y la evolución de los modelos.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>3. ¿Cómo aprende una máquina?</h2>
+
+<p>El tipo de modelo que usamos se llama <strong>árbol de decisión</strong>. Funciona haciendo preguntas sobre los datos para llegar a una conclusión.</p>
+
+<div class="analogy">
+  Imaginá que querés adivinar si alguien va a aprobar un examen. Le preguntás: ¿estudió más de 3 horas? Si sí → ¿durmió bien? Si también sí → "probablemente aprueba". Si no durmió bien → "difícil". El árbol es eso: una serie de preguntas encadenadas.
+</div>
+
+<p>Nosotros usamos una versión mucho más avanzada llamada <strong>LightGBM</strong>. En vez de un solo árbol, entrena <strong>miles de árboles</strong>, donde cada árbol nuevo aprende de los errores del anterior. Se llama "gradient boosting" (potenciamiento por gradiente).</p>
+
+<div class="callout callout-green">
+  <strong>¿Por qué miles de árboles y no uno solo?</strong><br>
+  Un árbol solo es como pedirle a una sola persona que resuelva un problema complejo. Puede equivocarse mucho. Si le preguntás a 1.000 personas distintas y combinás sus respuestas, el error promedio baja enormemente. Cada árbol aporta un pedacito de la respuesta correcta.
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>4. El punto de partida: el modelo baseline</h2>
+<p><span class="nb-label">nb04</span></p>
+
+<p>El primer modelo que corrí usaba las <strong>19 variables originales</strong> del dataset sin ninguna modificación: raza, edad, género, salud, cantidad de fotos, precio, etc. Simplemente le dí esos datos a LightGBM y lo dejé aprender.</p>
+
+<p>Resultado: Kappa <span class="resultado">0.3133</span>. No es malo para un punto de partida, pero hay mucho margen de mejora.</p>
+
+<div class="callout callout-orange">
+  <strong>¿Qué significa Kappa 0.31?</strong><br>
+  Significa que el modelo predice moderadamente mejor que el azar puro. Para ponerlo en perspectiva: Kappa 0 = adivinar al azar, Kappa 1 = predicción perfecta. Un Kappa de 0.40 en esta competencia es competitivo. Nuestro objetivo era superar eso.
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>5. Darle más pistas al modelo: Feature Engineering</h2>
+<p><span class="nb-label">nb04</span></p>
+
+<p>Los datos originales tienen información útil pero presentada de forma que la máquina no aprovecha del todo. El <strong>Feature Engineering</strong> (ingeniería de características) consiste en <strong>crear variables nuevas</strong> a partir de las existentes para que el modelo tenga mejores pistas.</p>
+
+<div class="analogy">
+  Es como darle a alguien los ingredientes de una receta versus darle la receta ya pensada: "si el animal tiene más de 3 fotos Y es joven Y es gratuito → tiene más chance de adoptarse rápido". No agregamos datos nuevos, sino que combinamos los que ya teníamos de formas más informativas.
+</div>
+
+<h3>¿Qué variables creé?</h3>
+
+<div class="step-card">
+  <div class="step-number">FE v1 — Las básicas</div>
+  <ul>
+    <li><strong>¿Tiene foto?</strong> — sí o no (antes era el número de fotos, ahora es binario)</li>
+    <li><strong>¿Es gratuita?</strong> — muchas adopciones tienen tarifa cero</li>
+    <li><strong>Grupo de edad</strong> — cachorro (0-3 meses), joven (3-12), adulto, mayor</li>
+    <li><strong>Puntaje de salud</strong> — suma de vacunado + desparasitado + esterilizado (0 a 3)</li>
+    <li><strong>¿Es raza pura?</strong> — las razas puras se adoptan diferente</li>
+    <li><strong>Fotos por animal</strong> — si son 3 gatos con 6 fotos, son 2 fotos por animal</li>
+  </ul>
+  <p><em>Mejora en Kappa: de 0.3133 a 0.3231 (+0.0099)</em></p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">FE v2 — Interacciones</div>
+  <p>A veces lo interesante no es una variable sola sino la <strong>combinación de dos</strong>. Por ejemplo: un cachorro con muchas fotos es muy diferente a un perro mayor con muchas fotos.</p>
+  <ul>
+    <li><strong>Edad × Fotos</strong> — cachorro con fotos vs. adulto con fotos</li>
+    <li><strong>Salud × Foto</strong> — animal sano y con foto: combinación ideal</li>
+    <li><strong>Joven y gratuito</strong> — la combinación más "adoptable"</li>
+  </ul>
+  <p><em>Mejora en Kappa: a 0.3371 (+0.0238)</em></p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">FE v3 — Texto e imágenes</div>
+  <p>El dataset venía con archivos JSON de <strong>Google Vision</strong> (análisis automático de las fotos) y <strong>Google NLP</strong> (análisis automático del texto de la descripción). Incorporé esos resultados como variables numéricas:</p>
+  <ul>
+    <li><strong>Sentimiento del texto</strong> — puntaje de positividad de la descripción</li>
+    <li><strong>Puntaje de etiquetas de imagen</strong> — qué tan bien reconoció Google los objetos en la foto</li>
+    <li><strong>Largo de la descripción</strong> — cuántos caracteres tiene el texto</li>
+  </ul>
+  <p><em>Mejora en Kappa: a 0.3595 (+0.0462)</em></p>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>6. El error que cometimos: memorizar en vez de aprender</h2>
+<p><span class="nb-label">nb04</span></p>
+
+<p>Cuando buscamos los mejores parámetros para el modelo (cuántos árboles usar, qué tan profundos, etc.), cometimos un error clásico: evaluábamos cada configuración directamente sobre el <strong>conjunto de prueba</strong>.</p>
+
+<div class="analogy">
+  Es como estudiar para un examen usando el examen real como práctica. Al momento de rendir, te va bien porque memorizaste ese examen específico, pero si te cambian las preguntas, no sabés nada. El modelo "memorizaba" el conjunto de prueba.
+</div>
+
+<p>El síntoma: el modelo acertaba el 64% de las veces en los datos de entrenamiento pero solo el 36% en datos nuevos. Esa brecha del 28% se llama <strong>overfitting</strong> (sobreajuste).</p>
+
+<div class="callout callout-red">
+  <strong>Gap de overfitting = señal de alarma.</strong><br>
+  Si el modelo funciona muy bien con los datos que vio pero muy mal con datos nuevos, aprendió de memoria en lugar de aprender patrones generales. El objetivo es que funcione bien con datos que nunca vio.
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>7. La solución: validación cruzada en 5 partes</h2>
+<p><span class="nb-label">nb05</span></p>
+
+<p>Para corregir el overfitting implementé un método llamado <strong>5-fold Cross Validation</strong> (validación cruzada en 5 partes). La idea es simple:</p>
+
+<ol>
+  <li>Divido los datos de entrenamiento en 5 grupos iguales.</li>
+  <li>Entreno el modelo con 4 grupos y lo evalúo con el grupo que sobra.</li>
+  <li>Repito esto 5 veces, usando cada grupo como evaluación una vez.</li>
+  <li>El resultado final es el promedio de las 5 evaluaciones.</li>
+</ol>
+
+<div class="analogy">
+  En vez de hacer una sola prueba, hacés 5 pruebas distintas con diferentes preguntas cada vez. Los parámetros que funcionan bien en las 5 pruebas son los que realmente generalizan — no los que funcionan solo para una versión específica del examen.
+</div>
+
+<p>Con este cambio, el gap de overfitting bajó de <strong>0.28 a 0.10</strong> — mucho más controlado. Y el Kappa de prueba real subió a <strong>0.3867</strong>.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>8. El problema de las razas: Target Encoding</h2>
+<p><span class="nb-label">nb05</span></p>
+
+<p>La variable "raza" (Breed1) tiene <strong>307 razas distintas</strong>. Si la usamos como un número (raza 1, raza 2, ..., raza 307), el modelo podría creer que la raza 250 es "similar" a la 251, lo cual no tiene ningún sentido biológico.</p>
+
+<p>La solución fue el <strong>Target Encoding</strong>: reemplazar cada raza por el <strong>promedio de velocidad de adopción</strong> de las mascotas de esa raza. Si los Golden Retrievers se adoptan en promedio en 8 días, la raza "Golden Retriever" se convierte en el número 8 (o su equivalente en la escala 0-4).</p>
+
+<div class="analogy">
+  En vez de decirle al modelo "esta mascota es de la raza número 47", le decís "esta raza históricamente se adopta en X días". El modelo ahora tiene información real en vez de un código arbitrario.
+</div>
+
+<div class="callout callout-purple">
+  <strong>El detalle del "smoothing":</strong><br>
+  Si una raza solo tiene 2 animales en el dataset, su promedio puede ser muy extremo por pura casualidad. El smoothing (suavizado) hace que las razas con pocos datos se acerquen al promedio general, evitando conclusiones basadas en muestras muy pequeñas.
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>9. Las pistas más valiosas: FE v4</h2>
+<p><span class="nb-label">nb05</span></p>
+
+<p>En esta etapa agregué tres tipos de variables nuevas que resultaron ser las más importantes de todo el proyecto:</p>
+
+<div class="step-card">
+  <div class="step-number">Comportamiento del rescatador</div>
+  <h4>¿Cuántas mascotas publicó el mismo rescatador?</h4>
+  <p>Los rescatadores que publican muchas mascotas suelen tener más experiencia, mejores fotos, mejores descripciones. Una mascota publicada por alguien con 50 publicaciones previas tiene perfil muy distinto a una publicada por alguien que lo hace por primera vez.</p>
+  <p><em>Esta resultó ser la variable más importante de todo el modelo según el análisis SHAP.</em></p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">Edad relativa a la raza</div>
+  <h4>¿Es "viejo" para su raza?</h4>
+  <p>Un perro de 3 años puede ser joven para un Mastín pero viejo para un Chihuahua. En vez de usar la edad absoluta, calculé <em>qué tan viejo es ese animal comparado con la mediana de animales de la misma raza y especie</em>. Un animal "viejo para su raza" se adopta más lento.</p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">Características del texto</div>
+  <h4>Más allá del sentimiento: señales simples del texto</h4>
+  <p>Sin necesidad de inteligencia artificial, algunas señales básicas del texto ya son informativas:</p>
+  <ul>
+    <li><strong>Cantidad de palabras</strong> — descripciones más largas suelen ser más detalladas</li>
+    <li><strong>Ratio de mayúsculas</strong> — ¿está GRITANDO la descripción?</li>
+    <li><strong>¿Tiene signos de exclamación?</strong> — señal de entusiasmo</li>
+    <li><strong>Longitud promedio de palabras</strong> — textos más elaborados vs. más simples</li>
+  </ul>
+</div>
+
+<div class="callout callout-orange">
+  <strong>Error que detectamos y corregimos — Data Leakage:</strong><br>
+  En nuestra primera versión de FE v4, calculamos "la velocidad de adopción promedio por rescatador" usando todos los datos de entrenamiento. El problema: si en la validación aparecía un rescatador que el modelo ya "vio" en el promedio, el modelo estaba haciendo trampa — indirectamente conocía el resultado. El CV llegó a Kappa 0.77 (claramente irreal). La solución fue usar solo el conteo (cuántas mascotas publicó), no el promedio del resultado.
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>10. Aporte del equipo: FE v5</h2>
+<p><span class="nb-label">nb05</span></p>
+
+<p>Un compañero de equipo propuso dos variables más que resultaron útiles:</p>
+
+<ul>
+  <li><strong>¿Tiene nombre?</strong> — Las mascotas con nombre asignado (no "Sin nombre") se adoptan más rápido. Sugiere que el rescatador ya tiene más vínculo emocional con el animal y eso se transmite en la publicación.</li>
+  <li><strong>Índice de fricción de adopción</strong> — Una fórmula que combina edad, estado de salud y si tiene nombre, para capturar cuántas "barreras" tiene esa mascota para ser adoptada.</li>
+</ul>
+
+<p>Mejora: <strong>+0.0067 en Kappa</strong>. Pequeña pero consistente.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>11. Entender qué miró el modelo: SHAP</h2>
+<p><span class="nb-label">nb07</span></p>
+
+<p>Hasta ahora sabíamos que el modelo acertaba bastante bien, pero no sabíamos <em>por qué</em>. SHAP es una técnica matemática que responde exactamente esa pregunta: <strong>¿cuánto aportó cada variable a cada predicción individual?</strong></p>
+
+<div class="analogy">
+  Imaginate que 5 personas ayudaron a construir una casa. SHAP sería como un contador que analiza cuánto trabajo real hizo cada persona y les asigna un pago justo. No mide cuántas veces aparecieron en la obra sino cuánto impacto real tuvo su trabajo.
+</div>
+
+<h3>Lo que encontré:</h3>
+<table>
+  <thead><tr><th>Variable</th><th>Importancia SHAP</th><th>¿Por qué tiene sentido?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>rescuer_n_pets</strong></td><td>0.278</td><td>Rescatadores experimentados hacen mejores publicaciones</td></tr>
+    <tr><td><strong>age_rel_breed</strong></td><td>0.243</td><td>Ser "viejo para la raza" es una señal poderosa</td></tr>
+    <tr><td><strong>Breed1_enc</strong></td><td>0.169</td><td>La raza, codificada con historia real de adopción</td></tr>
+    <tr><td><strong>avg_label_score</strong></td><td>0.091</td><td>La calidad visual de las fotos importa</td></tr>
+    <tr><td><strong>desc_length</strong></td><td>0.064</td><td>Descripciones más largas = más información = más adopciones</td></tr>
+  </tbody>
+</table>
+
+<p>Las tres variables más importantes eran <strong>las que habíamos creado en FE v4</strong>, no las originales del dataset. Esto confirmó que el trabajo de feature engineering había valido la pena.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>12. Transfer Learning: enseñarle a la computadora a leer</h2>
+<p><span class="nb-label">nb06</span></p>
+
+<p>Las descripciones en PetFinder son texto libre. Además de las estadísticas básicas que ya usamos, quisimos que la computadora <strong>entendiera el significado</strong> de esas descripciones.</p>
+
+<p>Para esto usamos <strong>DistilBERT</strong>, un modelo de lenguaje entrenado por Google sobre millones de textos. La idea del Transfer Learning es: en vez de enseñarle el idioma desde cero (lo que llevaría años y enormes recursos), tomamos un modelo que <em>ya sabe leer</em> y lo afinamos con nuestros datos específicos.</p>
+
+<div class="analogy">
+  Es como contratar a una persona que ya sabe inglés y enseñarle el vocabulario específico de tu empresa. No tenés que enseñarle gramática desde cero — solo el contexto particular que necesitás.
+</div>
+
+<p>Resultado: BERT solo no mejoró sobre nuestro modelo tabular. El texto en PetFinder es corto, mezclado entre inglés y malayo, y muchas señales del texto ya estaban capturadas por las variables NLP que habíamos creado. Sin embargo, al combinarlo con el 3% de peso en el ensemble final, aportó información marginal útil.</p>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>13. Tres expertos son mejores que uno: el Ensemble</h2>
+<p><span class="nb-label">nb08 · nb09 · nb10</span></p>
+
+<p>En lugar de usar un solo modelo, entrenamos tres tipos distintos de gradient boosting y combinamos sus predicciones:</p>
+
+<table>
+  <thead><tr><th>Modelo</th><th>Cómo crece</th><th>Fortaleza</th></tr></thead>
+  <tbody>
+    <tr><td><strong>LightGBM</strong></td><td>Hoja a hoja (leaf-wise)</td><td>Muy preciso en casos específicos</td></tr>
+    <tr><td><strong>XGBoost</strong></td><td>Nivel a nivel (depth-wise)</td><td>Más equilibrado, menos extremos</td></tr>
+    <tr><td><strong>CatBoost</strong></td><td>Simétrico</td><td>Menos tendencia a memorizar</td></tr>
+  </tbody>
+</table>
+
+<div class="analogy">
+  Imaginate tres médicos que hacen diagnósticos con métodos distintos. Si los tres coinciden, hay mucha confianza. Si uno dice algo distinto, ese puede estar viendo algo que los otros no. Al combinar las tres opiniones se cometen menos errores que con cualquiera solo.
+</div>
+
+<p>Los tres cometen errores en casos distintos. Al promediar sus predicciones con pesos óptimos (LGB 30% + XGB 45% + CB 25%), los errores individuales se cancelan parcialmente.</p>
+
+<div class="progreso">
+  <span class="progreso-item">LGB solo: 0.3867</span>
+  <span class="progreso-arrow">→</span>
+  <span class="progreso-item">LGB+XGB: 0.3906</span>
+  <span class="progreso-arrow">→</span>
+  <span class="progreso-item activo">LGB+XGB+CB: 0.3951</span>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>14. El toque final: umbrales óptimos (Optimized Rounder)</h2>
+<p><span class="nb-label">nb11</span></p>
+
+<p>Los modelos de clasificación producen <strong>probabilidades</strong> para cada clase. Por ejemplo: "20% de chance de clase 0, 15% de clase 1, 30% de clase 2, 25% de clase 3, 10% de clase 4". Para convertir eso en una predicción concreta necesitamos decidir cuándo ese puntaje continuo se convierte en "clase 2" vs. "clase 3".</p>
+
+<p>La forma estándar es usar el <em>promedio ponderado</em> de esas probabilidades y cortar en 0.5, 1.5, 2.5, 3.5. Pero esos cortes estándar <strong>asumen que las clases están balanceadas</strong>, y en PetFinder no lo están — hay muchas más mascotas que no se adoptan que mascotas adoptadas el mismo día.</p>
+
+<div class="analogy">
+  Imaginá que en un examen el promedio histórico es 6, pero el 40% de los alumnos saca entre 4 y 5. Si ponés el umbral de aprobado en 5.0, vas a reprobar demasiada gente que merecería pasar. Corrés el umbral a 4.5 y el resultado es más justo para esa distribución real.
+</div>
+
+<p>El <strong>Optimized Rounder</strong> usa un algoritmo de optimización matemática para encontrar los 4 umbrales de corte que <em>maximizan el Kappa</em> en los datos de validación. Los umbrales óptimos que encontramos fueron:</p>
+
+<table>
+  <thead><tr><th>Corte</th><th>Estándar</th><th>Optimizado</th><th>Efecto</th></tr></thead>
+  <tbody>
+    <tr><td>Entre clase 0 y 1</td><td>0.50</td><td>0.50</td><td>Sin cambio</td></tr>
+    <tr><td>Entre clase 1 y 2</td><td>1.50</td><td>2.06</td><td>Más predicciones como clase 1</td></tr>
+    <tr><td>Entre clase 2 y 3</td><td>2.50</td><td>2.52</td><td>Sin cambio significativo</td></tr>
+    <tr><td>Entre clase 3 y 4</td><td>3.50</td><td>2.91</td><td>Menos predicciones de "nunca adoptado"</td></tr>
+  </tbody>
+</table>
+
+<p>El cambio más importante: el umbral entre "3 meses" y "nunca adoptado" bajó de 3.5 a 2.9, lo que redujo las predicciones de "nunca adoptado" de 1206 a 784 — porque el modelo estaba siendo demasiado pesimista en esa categoría.</p>
+
+<div class="callout callout-green">
+  <strong>Resultado: Kappa 0.4207</strong> — el mejor del proyecto, +0.0256 sobre el ensemble sin rounder.<br>
+  <strong>Mejora total desde el baseline: +0.1074</strong> (de 0.3133 a 0.4207)
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>15. El recorrido completo</h2>
+
+<table>
+  <thead>
+    <tr><th>Paso</th><th>¿Qué hicimos?</th><th>Kappa</th><th>Mejora</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Punto de partida</td><td>Modelo básico con los 19 datos originales</td><td>0.3133</td><td>—</td></tr>
+    <tr><td>FE v1 — pistas básicas</td><td>Foto, precio gratis, edad, salud</td><td>0.3231</td><td>+0.0099</td></tr>
+    <tr><td>FE v2 — combinaciones</td><td>Cachorro con foto, animal sano con foto</td><td>0.3371</td><td>+0.0238</td></tr>
+    <tr><td>FE v3 — texto e imagen</td><td>Sentimiento, calidad de foto</td><td>0.3595</td><td>+0.0462</td></tr>
+    <tr><td>FE v4 + validación cruzada</td><td>Rescatador, edad relativa, texto, anti-overfitting</td><td class="kappa-best">0.3867</td><td>+0.0734</td></tr>
+    <tr><td>Ensemble 3 modelos</td><td>LightGBM + XGBoost + CatBoost</td><td>0.3951</td><td>+0.0818</td></tr>
+    <tr><td><strong>Optimized Rounder</strong></td><td><strong>Umbrales de corte optimizados</strong></td><td class="kappa-record">0.4207</td><td>+0.1074</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>16. ¿Por qué funcionó cada cosa?</h2>
+
+<table>
+  <thead><tr><th>Técnica</th><th>¿Por qué mejoró el resultado?</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Feature Engineering</strong></td>
+      <td>Los datos crudos no tenían toda la información en la forma correcta. Al crear variables como "fotos por animal" o "edad relativa a la raza", le dimos al modelo pistas que no podía descubrir solo.</td>
+    </tr>
+    <tr>
+      <td><strong>Validación cruzada</strong></td>
+      <td>Evitó que el modelo memorizara los datos de prueba. Los parámetros elegidos funcionan bien en datos nuevos, no solo en los que usamos para ajustar.</td>
+    </tr>
+    <tr>
+      <td><strong>Target Encoding</strong></td>
+      <td>Convirtió un código arbitrario (raza número 47) en información real (razas que históricamente se adoptan rápido vs. lento).</td>
+    </tr>
+    <tr>
+      <td><strong>Rescuer features</strong></td>
+      <td>El comportamiento del rescatador captura información sobre la calidad de la publicación que ningún dato individual puede ver solo.</td>
+    </tr>
+    <tr>
+      <td><strong>Ensemble de modelos</strong></td>
+      <td>Tres modelos con estrategias distintas cometen errores en casos distintos. Al combinarlos, los errores se cancelan parcialmente.</td>
+    </tr>
+    <tr>
+      <td><strong>Optimized Rounder</strong></td>
+      <td>Las clases no están balanceadas en la realidad. Ajustar los umbrales de corte a la distribución real mejoró directamente la métrica que nos importaba.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2>17. ¿Qué no funcionó y por qué?</h2>
+
+<div class="step-card">
+  <div class="step-number">BERT como modelo principal</div>
+  <p>El modelo de lenguaje entrenó bien, pero las descripciones en PetFinder son cortas, están en dos idiomas mezclados y muchas señales del texto ya estaban capturadas por las variables NLP básicas. BERT solo no mejora sobre el modelo tabular — solo aporta en el blend con muy poco peso (3%).</p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">Boruta para selección de variables</div>
+  <p>Boruta es una técnica que evalúa qué variables son "realmente importantes" usando un método estadístico muy conservador. Solo aceptó 1 variable de las 48. ¿Significa que las otras 47 son inútiles? No — Boruta usa Random Forest internamente, que es menos potente que LightGBM. El análisis SHAP con LightGBM confirma que todas las variables aportan algo.</p>
+</div>
+
+<div class="step-card">
+  <div class="step-number">Optuna con 80 trials (más búsqueda no siempre es mejor)</div>
+  <p>Duplicar la búsqueda de hiperparámetros de 30 a 80 intentos empeoró el resultado. El algoritmo encontró parámetros que funcionan muy bien en validación pero mal en datos nuevos — otro caso de overfitting, esta vez de los parámetros del modelo.</p>
+</div>
+
+<hr>
+
+<div class="callout callout-green">
+  <strong>Conclusión del proyecto</strong><br><br>
+  La mayor parte de la mejora no vino de usar modelos más complejos sino de <strong>entender mejor los datos</strong>: qué variables importaban, cómo representarlas mejor, y cómo evitar que el modelo hiciera trampa durante el entrenamiento. La combinación de feature engineering cuidadoso + validación cruzada + ensemble de modelos diversos + optimización de los umbrales de decisión llevó el Kappa de 0.31 a 0.42 — una mejora del 34% sobre el punto de partida.
+</div>
+
+<div class="footer">
+  Laboratorio de Implementación II · Universidad Austral · Abril 2026<br>
+  Roxana Alberti · Sandra Sschicchi · Fernando Paganini · Baltazar Villanueva · Paula Calviello · Rosana Martinez
+</div>
+
+</body>
+</html>
